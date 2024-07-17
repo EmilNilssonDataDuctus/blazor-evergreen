@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 var Configuration = builder.Configuration;
@@ -16,18 +18,21 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<TokenClient>();
 
-//JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-builder.Services.AddAuthentication(options => {
+builder.Services.AddAuthentication(options =>
+{
 
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
 })
-.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options => {
-
-    options.Cookie.SameSite = SameSiteMode.Strict;
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None;
+    //options.Cookie.SameSite = SameSiteMode.Strict;
 })
-.AddOpenIdConnect(options => {
+.AddOpenIdConnect(options =>
+{
 
     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
@@ -42,14 +47,36 @@ builder.Services.AddAuthentication(options => {
     options.RequireHttpsMetadata = false;
 
     string scopeString = Configuration.GetValue<string>("OpenIDConnect:Scope");
-    scopeString.Split(" ", StringSplitOptions.TrimEntries).ToList().ForEach(scope => {
+    scopeString.Split(" ", StringSplitOptions.TrimEntries).ToList().ForEach(scope =>
+    {
         options.Scope.Add(scope);
     });
+
+    bool TokenEndpointNotProvided = String.IsNullOrEmpty(Configuration["OpenIDConnect:TokenEndpoint"]);
+    bool AuthorizationEndpointNotProvided = String.IsNullOrEmpty(Configuration["OpenIDConnect:AuthorizationEndpoint"]);
+    bool JwksUriNotProvided = String.IsNullOrEmpty(Configuration["OpenIDConnect:JwksUri"]);
+    bool authorityRequired = TokenEndpointNotProvided || AuthorizationEndpointNotProvided || JwksUriNotProvided;
+    if (authorityRequired)
+    {
+        options.Authority = Configuration["OpenIDConnect:Issuer"];
+    }
+    else
+    {
+        options.MetadataAddress = String.Concat(Configuration["OpenIDConnect:Issuer"], "/.well-known/openid-configuration");
+        options.Configuration = new OpenIdConnectConfiguration
+        {
+            AuthorizationEndpoint = Configuration["OpenIDConnect:AuthorizationEndpoint"],
+            TokenEndpoint = Configuration["OpenIDConnect:TokenEndpoint"],
+            //JwksUri = Configuration["OpenIDConnect:JwksUri"]
+        };
+    }
+
 
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidIssuer = options.Authority,
-        ValidAudience = options.ClientId
+        ValidAudience = options.ClientId,
+        // ValidateIssuer = Convert.ToBoolean(Configuration["OpenIDConnect:ValidateIssuer"])
     };
 
     options.Events.OnRedirectToIdentityProviderForSignOut = (context) =>
