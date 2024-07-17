@@ -1,13 +1,69 @@
+using BlazorAppEvergreenOIDC;
 using BlazorAppEvergreenOIDC.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+var Configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton<TokenClient>();
+
+//JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+builder.Services.AddAuthentication(options => {
+
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options => {
+
+    options.Cookie.SameSite = SameSiteMode.Strict;
+})
+.AddOpenIdConnect(options => {
+
+    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+
+    options.Authority = Configuration.GetValue<string>("OpenIdConnect:Issuer");
+    options.ClientId = Configuration.GetValue<string>("OpenIdConnect:ClientId");
+    options.ClientSecret = Configuration.GetValue<string>("OpenIdConnect:ClientSecret");
+    options.ResponseType = OpenIdConnectResponseType.Code;
+    options.ResponseMode = OpenIdConnectResponseMode.Query;
+    options.GetClaimsFromUserInfoEndpoint = true;
+
+    // Program wont let me access Authority Curity on http unless I add this
+    options.RequireHttpsMetadata = false;
+
+    string scopeString = Configuration.GetValue<string>("OpenIDConnect:Scope");
+    scopeString.Split(" ", StringSplitOptions.TrimEntries).ToList().ForEach(scope => {
+        options.Scope.Add(scope);
+    });
+
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = options.Authority,
+        ValidAudience = options.ClientId
+    };
+
+    options.Events.OnRedirectToIdentityProviderForSignOut = (context) =>
+    {
+        context.ProtocolMessage.PostLogoutRedirectUri = Configuration.GetValue<string>("OpenIdConnect:PostLogoutRedirectUri");
+        return Task.CompletedTask;
+    };
+
+    options.SaveTokens = true;
+});
+
+builder.Services.AddAuthorization();
+builder.Services.AddRazorPages();
+
 
 var app = builder.Build();
 
@@ -24,6 +80,22 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// https://stackoverflow.com/questions/53980129/oidc-login-fails-with-correlation-failed-cookie-not-found-while-cookie-is
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.None,
+    Secure = CookieSecurePolicy.Always
+});
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapRazorPages();
+// Alt from Curity docs https://curity.io/resources/learn/dotnet-openid-connect-website/#integrating-net-security
+//app.UseEndpoints(endpoints => {
+//    endpoints.MapRazorPages();
+//});
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
