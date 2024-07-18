@@ -1,8 +1,10 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Components.Web
 @namespace BlazorAppEvergreenOIDC.Pages
+@using Microsoft.AspNetCore.Authorization
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
+@attribute [Authorize]
 <!DOCTYPE html>
 <html lang="en">
 <head>

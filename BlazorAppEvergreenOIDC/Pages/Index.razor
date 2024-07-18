@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
 <PageTitle>Index</PageTitle>
 
@@ -11,3 +12,20 @@ Welcome to your new app.
 <form method="GET" action="/protected">
     <p><button type="submit">View Protected Data</button></p>
 </form>
+
+@code {
+    // https://stackoverflow.com/questions/58076758/navigationerror-on-navigateto
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            NavigationManager.NavigateTo("/counter");
+            await base.OnInitializedAsync();
+        }
+        catch (Exception e)
+        {
+            e.GetType();
+            throw e;
+        }
+    }
+}
