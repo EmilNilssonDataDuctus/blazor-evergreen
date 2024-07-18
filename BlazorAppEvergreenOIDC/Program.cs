@@ -17,6 +17,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<TokenClient>();
+builder.Services.AddScoped<TokenProvider>();
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 

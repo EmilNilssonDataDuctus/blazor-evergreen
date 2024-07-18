@@ -3,8 +3,45 @@
 @namespace BlazorAppEvergreenOIDC.Pages
 @using Microsoft.AspNetCore.Authorization
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject TokenClient tokenClient;
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+@using System.Security.Claims;
 
 @attribute [Authorize]
+
+@{
+    var currentUser = this.HttpContext.User;
+    var AuthenticationStatus = currentUser?.Identity?.IsAuthenticated;
+
+    var tokens = new InitialApplicationState
+            {
+                AccessToken = null,
+                RefreshToken = null,
+                IdToken = null,
+                IsAuthenticated = Convert.ToBoolean(AuthenticationStatus)
+            };
+
+    // Refresh tokens whenever the user refreshes the page
+    try
+    {
+        await this.tokenClient.RefreshAccessToken(this.HttpContext);
+        tokens.AccessToken = await this.tokenClient.GetAccessToken(this.HttpContext);
+        tokens.RefreshToken = await this.tokenClient.GetRefreshToken(this.HttpContext);
+        tokens.IdToken = await this.tokenClient.GetIdToken(this.HttpContext);
+    }
+    catch (Exception e)
+    {
+        await this.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await this.HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+        // Redirect(Configuration["OpenIDConnect:LogoutEndpoint"]!);
+        // Redirect("/");
+
+        e.GetType();
+    }
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,11 +51,11 @@
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link href="css/site.css" rel="stylesheet" />
     <link href="BlazorAppEvergreenOIDC.styles.css" rel="stylesheet" />
-    <link rel="icon" type="image/png" href="favicon.png"/>
+    <link rel="icon" type="image/png" href="favicon.png" />
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
 <body>
-    <component type="typeof(App)" render-mode="ServerPrerendered" />
+    <component type="typeof(App)" render-mode="ServerPrerendered" param-InitialState="tokens" />
 
     <div id="blazor-error-ui">
         <environment include="Staging,Production">

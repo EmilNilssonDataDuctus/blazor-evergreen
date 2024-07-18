@@ -1,0 +1,30 @@
+﻿@inject TokenProvider tokenprovider
+
+<details open style="background-color: rgba(0,0,0,0.2); max-width: 80vw;">
+    <summary>
+        <div>
+            <h3>
+                Current tokens <br />
+            </h3>
+            <p>IsAuthenticated: @_isAuthenticated</p>
+        </div>
+    </summary>
+    <p>AccessToken: @_accessToken</p>
+    <p>RefreshToken: @_refreshToken</p>
+    <p style="overflow-x: scroll;">IdToken: @_idToken</p>
+</details>
+
+@code {
+    private string _accessToken = string.Empty;
+    private string _refreshToken = string.Empty;
+    private string _idToken = string.Empty;
+    private string _isAuthenticated = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        _accessToken = tokenprovider.AccessToken ?? string.Empty;
+        _refreshToken = tokenprovider.RefreshToken ?? string.Empty;
+        _idToken = tokenprovider.IdToken ?? string.Empty;
+        _isAuthenticated = tokenprovider.IsAuthenticated.ToString();
+    }
+}

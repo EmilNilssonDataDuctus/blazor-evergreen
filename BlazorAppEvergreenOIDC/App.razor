@@ -1,4 +1,6 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@inject TokenProvider TokenProvider
+
+<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
@@ -10,3 +12,18 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+@code {
+    [Parameter]
+    public InitialApplicationState? InitialState { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        TokenProvider.AccessToken = InitialState!.AccessToken;
+        TokenProvider.RefreshToken = InitialState!.RefreshToken;
+        TokenProvider.IdToken = InitialState!.IdToken;
+        TokenProvider.IsAuthenticated = InitialState!.IsAuthenticated;
+
+        return base.OnInitializedAsync();
+    }
+}

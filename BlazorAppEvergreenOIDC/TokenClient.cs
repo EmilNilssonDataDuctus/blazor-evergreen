@@ -39,7 +39,14 @@ namespace BlazorAppEvergreenOIDC
         {
             return await context.GetTokenAsync(REFRESH_TOKEN);
         }
-        
+
+        public async Task<string> GetIdToken(HttpContext context)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            return await context.GetTokenAsync(ID_TOKEN);
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
         /*
          * Do the work of getting new tokens and updating cookies
          */
