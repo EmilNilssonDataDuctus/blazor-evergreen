@@ -25,21 +25,23 @@ builder.Services.AddSingleton<TokenClient>();
 builder.Services.AddScoped<TokenProvider>();
 builder.Services.AddScoped<JwtHandler>();
 
-JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+// The following code is from Curitys demo app
+// DONT use it as it removes all microsoft schema issued claims
+//JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 builder.Services.AddAuthentication(options =>
 {
-
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
 })
 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
 {
-    options.Cookie.SameSite = SameSiteMode.None;
-    //options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SameSite = SameSiteMode.Strict;
 })
 .AddOpenIdConnect(options =>
 {
+    options.NonceCookie.SameSite = SameSiteMode.Strict;
+    options.CorrelationCookie.SameSite = SameSiteMode.Strict;
 
     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
@@ -48,7 +50,7 @@ builder.Services.AddAuthentication(options =>
     options.ClientSecret = Configuration.GetValue<string>("OpenIdConnect:ClientSecret");
     options.ResponseType = OpenIdConnectResponseType.Code;
     options.ResponseMode = OpenIdConnectResponseMode.Query;
-    options.GetClaimsFromUserInfoEndpoint = true;
+    options.GetClaimsFromUserInfoEndpoint = false;
 
     // Program wont let me access Authority Curity on http unless I add this
     options.RequireHttpsMetadata = false;
@@ -82,6 +84,12 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddLocalization();
 builder.Services.AddControllers();
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.Secure = CookieSecurePolicy.Always;
+});
 
 var app = builder.Build();
 
@@ -103,21 +111,10 @@ var localizationOptions = new RequestLocalizationOptions()
     .AddSupportedUICultures(supportedCultures);
 app.UseRequestLocalization(localizationOptions);
 
-// https://stackoverflow.com/questions/53980129/oidc-login-fails-with-correlation-failed-cookie-not-found-while-cookie-is
-app.UseCookiePolicy(new CookiePolicyOptions
-{
-    MinimumSameSitePolicy = SameSiteMode.None,
-    Secure = CookieSecurePolicy.Always
-});
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-// Alt from Curity docs https://curity.io/resources/learn/dotnet-openid-connect-website/#integrating-net-security
-//app.UseEndpoints(endpoints => {
-//    endpoints.MapRazorPages();
-//});
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
