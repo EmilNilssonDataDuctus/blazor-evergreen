@@ -23,6 +23,7 @@ builder.Services.AddScoped<ScimUserService>();
 builder.Services.AddSingleton<FileLogger>();
 builder.Services.AddSingleton<TokenClient>();
 builder.Services.AddScoped<TokenProvider>();
+builder.Services.AddScoped<JwtHandler>();
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 

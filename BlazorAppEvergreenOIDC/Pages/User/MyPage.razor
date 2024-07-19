@@ -1,8 +1,8 @@
-﻿@page "/my-page"
+﻿@* @page "/my-page"
 @attribute [Authorize]
-<p>Your my-page</p>
+<p>Your my-page</p> *@
 
-@* 
+
 @page "/my-page"
 @using System.Net.Http.Json
 @using System.Text.Json.Serialization;
@@ -201,4 +201,3 @@ else
         }
     }
 }
- *@
