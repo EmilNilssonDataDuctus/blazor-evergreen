@@ -53,31 +53,13 @@ builder.Services.AddAuthentication(options =>
         options.Scope.Add(scope);
     });
 
-    bool TokenEndpointNotProvided = String.IsNullOrEmpty(Configuration["OpenIDConnect:TokenEndpoint"]);
-    bool AuthorizationEndpointNotProvided = String.IsNullOrEmpty(Configuration["OpenIDConnect:AuthorizationEndpoint"]);
-    bool JwksUriNotProvided = String.IsNullOrEmpty(Configuration["OpenIDConnect:JwksUri"]);
-    bool authorityRequired = TokenEndpointNotProvided || AuthorizationEndpointNotProvided || JwksUriNotProvided;
-    if (authorityRequired)
-    {
-        options.Authority = Configuration["OpenIDConnect:Issuer"];
-    }
-    else
-    {
-        options.MetadataAddress = String.Concat(Configuration["OpenIDConnect:Issuer"], "/.well-known/openid-configuration");
-        options.Configuration = new OpenIdConnectConfiguration
-        {
-            AuthorizationEndpoint = Configuration["OpenIDConnect:AuthorizationEndpoint"],
-            TokenEndpoint = Configuration["OpenIDConnect:TokenEndpoint"],
-            //JwksUri = Configuration["OpenIDConnect:JwksUri"]
-        };
-    }
-
+    options.Authority = Configuration["OpenIDConnect:Issuer"];
 
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidIssuer = options.Authority,
         ValidAudience = options.ClientId,
-        // ValidateIssuer = Convert.ToBoolean(Configuration["OpenIDConnect:ValidateIssuer"])
+        ValidateIssuer = Convert.ToBoolean(Configuration["OpenIDConnect:ValidateIssuer"])
     };
 
     options.Events.OnRedirectToIdentityProviderForSignOut = (context) =>
