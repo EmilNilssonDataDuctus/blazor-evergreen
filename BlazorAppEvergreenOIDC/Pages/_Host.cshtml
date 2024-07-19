@@ -8,11 +8,23 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies;
 @using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+@using System.Globalization
+@using Microsoft.AspNetCore.Localization
+
+@inject IConfiguration Configuration;
+
 @using System.Security.Claims;
 
 @attribute [Authorize]
 
 @{
+    this.HttpContext.Response.Cookies.Append(
+        CookieRequestCultureProvider.DefaultCookieName,
+        CookieRequestCultureProvider.MakeCookieValue(
+            new RequestCulture(
+                CultureInfo.CurrentCulture,
+                CultureInfo.CurrentUICulture)));
+
     var currentUser = this.HttpContext.User;
     var AuthenticationStatus = currentUser?.Identity?.IsAuthenticated;
 
@@ -36,8 +48,8 @@
     {
         await this.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         await this.HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
-        // Redirect(Configuration["OpenIDConnect:LogoutEndpoint"]!);
-        // Redirect("/");
+        Redirect(Configuration["OpenIDConnect:LogoutEndpoint"]!);
+        Redirect("/");
 
         e.GetType();
     }
