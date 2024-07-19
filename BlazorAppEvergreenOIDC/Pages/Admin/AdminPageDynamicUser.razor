@@ -1,0 +1,67 @@
+﻿@page "/userpage/{currentUserId}"
+
+@using System.Net.Http.Json
+@using System.Text.Json.Serialization;
+@using BlazorAppEvergreenOIDC.Models
+@using BlazorAppEvergreenOIDC.Models.ScimModels;
+@using BlazorAppEvergreenOIDC.Models.ScimModels.Responses
+@using System.Globalization
+@using BlazorAppEvergreenOIDC.Data
+
+@inject FileLogger fileLogger
+@inject IConfiguration Configuration;
+@inject NavigationManager NavigationManager
+@inject ScimUserService ScimUsersService
+@inject IStringLocalizer<CultureExample> Loc
+@attribute [Authorize]
+
+<PageTitle>User page - @_currentUserName</PageTitle>
+
+<MudText Typo="Typo.h1">@Loc["adminUserPageHeading"]</MudText>
+<AuthorizeView Roles="@Configuration["OpenIDConnect:AdminRoleValue"]">
+    <ChildContent>
+        <BlazorAppEvergreenOIDC.Pages.Controls.UserBasicInfo role="@_currentUser?.role"
+                                                                 userName="@_currentUser?.userName"
+                                                                 givenName="@_currentUser?.name?.givenName"
+                                                                 familyName="@_currentUser?.name?.familyName"
+                                                                 mobile="@_currentUserPhonenumber"
+                                                                 email="@_currentUser?.GetFirstEmail()" />
+        <BlazorAppEvergreenOIDC.Pages.Controls.SCIMDevicesTable userId="@currentUserId" tableTitle="@_tableTitleString" />
+    </ChildContent>
+    <NotAuthorized>
+        @Loc["notAuthorized"]
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [Parameter]
+    public string currentUserId { get; set; } = string.Empty;
+
+    private string _currentUserName { get; set; } = string.Empty;
+    private string _currentUserPhonenumber { get; set; } = string.Empty;
+    private string _tableTitleString { get; set; } = string.Empty;
+
+    private ResourceUser? _currentUser { get; set; }
+    private List<ResourceDevice>? _currentUserDevices = new List<ResourceDevice>();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            _currentUser = await ScimUsersService.GetUserByIdAsync(currentUserId);
+            _currentUserDevices = _currentUser.urnDevices;
+            _currentUserName = _currentUser.userName;
+            _currentUserPhonenumber = (_currentUser?.phoneNumbers != null && _currentUser.phoneNumbers.Count > 0 && !string.IsNullOrEmpty(_currentUser.phoneNumbers[0].Value))
+                ? _currentUser.phoneNumbers[0].Value
+                : "-";
+            _tableTitleString = @Loc["devicesTableTitle"] + ": " + _currentUserName;
+        }
+        catch (Exception e)
+        {
+            e.GetType();
+            fileLogger.SaveLogToFile(e.ToString());
+            throw e;
+        }
+    }
+}

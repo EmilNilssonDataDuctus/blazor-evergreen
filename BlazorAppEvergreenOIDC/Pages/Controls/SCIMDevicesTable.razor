@@ -1,0 +1,199 @@
+﻿@using BlazorAppEvergreenOIDC.Models.ScimModels
+@using BlazorAppEvergreenOIDC.Models.ScimModels.Responses
+@using BlazorAppEvergreenOIDC.Data
+
+@inject FileLogger fileLogger
+@inject ScimUserService ScimUsersService
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<CultureExample> Loc
+
+
+@if (_Devices != null && _Devices.Count != 0)
+{
+    <MudPaper Class="mt-0 mb-4 pa-4">
+        <MudButton Variant="Variant.Filled" OnClick="() => HandlePrev()" Disabled="@_prevDisabled">
+            @Loc["prevTen"]
+        </MudButton>
+        <MudButton Variant="Variant.Filled" OnClick="() => HandleNext()" Disabled="@_nextDisabled">
+            @Loc["nextTen"]
+        </MudButton>
+        @Loc["totalResults"]: @_totalResults
+
+        <MudTable Items="@_Devices" Hover="true" SortLabel="@Loc["labelSortBy"]">
+            <ToolBarContent>
+                <MudText Typo="Typo.h2">@tableTitle</MudText>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh><MudTableSortLabel SortBy="new Func<ResourceDevice, object>(x => x.DeviceType)">@Loc["deviceTableDeviceType"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ResourceDevice, object>(x => x.Alias)">@Loc["deviceAliasLabel"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ResourceDevice, object>(x => x.GetCreated())">@Loc["deviceCreatedLabel"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ResourceDevice, object>(x => x.GetLastModified())">@Loc["deviceLastModifiedLabel"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ResourceDevice, object>(x => x.Id)">@Loc["deviceCurityIdLabel"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ResourceDevice, object>(x => x.DeviceId)">@Loc["deviceIdLabel"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ResourceDevice, object>(x => x.Owner)">@Loc["deviceOwnerLabel"]</MudTableSortLabel></MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@Loc["deviceTableDeviceType"]">@context.DeviceType</MudTd>
+                <MudTd DataLabel="@Loc["deviceAliasLabel"]">@context.Alias</MudTd>
+                <MudTd DataLabel="@Loc["deviceCreatedLabel"]">@context?.GetCreated()</MudTd>
+                <MudTd DataLabel="@Loc["deviceLastModifiedLabel"]">@context?.GetLastModified()</MudTd>
+                <MudTd Style="max-width: 100px; word-break: break-all;" DataLabel="@Loc["deviceCurityIdLabel"]">@context.Id</MudTd>
+                <MudTd DataLabel="@Loc["deviceIdLabel"]">@context.DeviceId</MudTd>
+                <MudTd DataLabel="@Loc["deviceOwnerLabel"]"><button type="button" class="btn btn-primary table-btn" @onclick="@(() => NavigationManager.NavigateTo($"/userpage/{@context.Owner}"))">@Loc["buttonSeeFullUserInfo"]</button></MudTd>
+                <SCIMDevicesTableDeleteButton CurityId="@context.Id.ToString()" />
+            </RowTemplate>
+        </MudTable>
+    </MudPaper>
+}
+else
+{
+    <p>
+        @Loc["userHasNoDevices"]
+    </p>
+}
+
+@code {
+    [Parameter]
+    public string userId { get; set; } = string.Empty;
+
+    [Parameter]
+    public string tableTitle { get; set; } = string.Empty;
+
+    private bool _prevDisabled { get; set; } = true;
+    private bool _nextDisabled { get; set; } = false;
+
+    private int _count { get; set; } = 10;
+    private int _startIndex { get; set; } = 1;
+    private int _totalResults { get; set; }
+
+    private List<ResourceDevice>? _Devices = new List<ResourceDevice>();
+
+    private bool _confirmDelete { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await setDevices();
+        }
+        catch (Exception e)
+        {
+            e.GetType();
+            fileLogger.SaveLogToFile(e.ToString());
+            throw e;
+        }
+    }
+
+    private async Task setDevices()
+    {
+        if (!string.IsNullOrEmpty(userId))
+        {
+            try
+            {
+                ResponseGetUserById response = await ScimUsersService.GetUserByIdAsync(userId);
+                _Devices = response.urnDevices.ToList<ResourceDevice>();
+                _totalResults = _Devices.Count();
+            }
+            catch (Exception e)
+            {
+                e.GetType();
+                fileLogger.SaveLogToFile(e.ToString());
+                throw e;
+            }
+        }
+        else
+        {
+            try
+            {
+                ResponseGetDevices response = await ScimUsersService.GetDevicesAsync(_count, _startIndex);
+                _Devices = response.Resources.ToList<ResourceDevice>();
+                _totalResults = response.totalResults;
+            }
+            catch (Exception e)
+            {
+                e.GetType();
+                fileLogger.SaveLogToFile(e.ToString());
+                throw e;
+            }
+        }
+        CheckIfDisablePrevButton();
+        CheckIfDisableNextButton();
+    }
+
+
+    private async Task HandlePrev()
+    {
+        _nextDisabled = false;
+
+        if (_startIndex > 9)
+        {
+            _startIndex = _startIndex - 10;
+        }
+        else
+        {
+            _startIndex = 1;
+        }
+
+        CheckIfDisablePrevButton();
+
+        await setDevices();
+    }
+
+    private async Task HandleNext()
+    {
+        _prevDisabled = false;
+        _startIndex = _startIndex + 10;
+
+        await setDevices();
+
+        CheckIfDisableNextButton();
+    }
+
+    private void CheckIfDisablePrevButton()
+    {
+        // Disable prev button on first page
+        if (_startIndex < 11)
+        {
+            _prevDisabled = true;
+        }
+    }
+    private void CheckIfDisableNextButton()
+    {
+        _nextDisabled = false;
+
+        // Disable next button on last page
+        if (_Devices?.Count < _count)
+        {
+            _nextDisabled = true;
+        }
+        if (_totalResults < 11)
+        {
+            _nextDisabled = true;
+        }
+    }
+
+    private void TriggerConfirmButton()
+    {
+        _confirmDelete = true;
+    }
+
+    private void CancelDelete()
+    {
+        _confirmDelete = false;
+    }
+
+    private async Task HandleDeleteDevice(string deviceId)
+    {
+        try
+        {
+            await ScimUsersService.DeleteDeviceAsync(deviceId);
+        }
+        catch (Exception e)
+        {
+            e.GetType();
+            fileLogger.SaveLogToFile(e.ToString());
+            throw e;
+        }
+    }
+}

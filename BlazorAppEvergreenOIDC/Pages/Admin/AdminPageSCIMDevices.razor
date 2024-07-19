@@ -1,0 +1,19 @@
+﻿@page "/all-devices"
+@using System.Globalization
+@using BlazorAppEvergreenOIDC.Pages.Controls
+@using Pages
+
+@inject IConfiguration Configuration;
+@inject IStringLocalizer<CultureExample> Loc
+@attribute [Authorize]
+
+<PageTitle>All devices</PageTitle>
+<AuthorizeView Roles="@Configuration["OpenIDConnect:AdminRoleValue"]">
+    <ChildContent>
+        <MudText Typo="Typo.h1">@Loc["allDevices"]</MudText>
+        <SCIMDevicesTable tableTitle="@Loc["devices"]" />
+    </ChildContent>
+    <NotAuthorized>
+        @Loc["notAuthorized"]
+    </NotAuthorized>
+</AuthorizeView>

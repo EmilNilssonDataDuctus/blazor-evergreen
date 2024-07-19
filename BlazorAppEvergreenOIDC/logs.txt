@@ -1,0 +1,11 @@
+
+7/19/2024 3:32:56 PM: System.InvalidOperationException: An invalid request URI was provided. Either the request URI must be an absolute URI or BaseAddress must be set.
+   at System.Net.Http.HttpClient.PrepareRequestMessage(HttpRequestMessage request)
+   at System.Net.Http.HttpClient.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at ScimUserService.GetUsersAsyncWithSearchQuery(Int32 count, Int32 startIndex, String searchQueryUserName) in C:\Users\eminilss\source\repos\BlazorAppEvergreenOIDC\BlazorAppEvergreenOIDC\Data\ScimUserService.cs:line 68
+   at BlazorAppEvergreenOIDC.Pages.Controls.SCIMUsersTable.GetUsersFromScim() in C:\Users\eminilss\source\repos\BlazorAppEvergreenOIDC\BlazorAppEvergreenOIDC\Pages\Controls\SCIMUsersTable.razor:line 136
+7/19/2024 3:32:59 PM: System.InvalidOperationException: An invalid request URI was provided. Either the request URI must be an absolute URI or BaseAddress must be set.
+   at System.Net.Http.HttpClient.PrepareRequestMessage(HttpRequestMessage request)
+   at System.Net.Http.HttpClient.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at ScimUserService.GetUsersAsyncWithSearchQuery(Int32 count, Int32 startIndex, String searchQueryUserName) in C:\Users\eminilss\source\repos\BlazorAppEvergreenOIDC\BlazorAppEvergreenOIDC\Data\ScimUserService.cs:line 68
+   at BlazorAppEvergreenOIDC.Pages.Controls.SCIMUsersTable.GetUsersFromScim() in C:\Users\eminilss\source\repos\BlazorAppEvergreenOIDC\BlazorAppEvergreenOIDC\Pages\Controls\SCIMUsersTable.razor:line 136

@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="addNewDeviceButtonText" xml:space="preserve">
+    <value>Lägg till ny enhet</value>
+  </data>
+  <data name="adminUserPageHeading" xml:space="preserve">
+    <value>Användarsida</value>
+  </data>
+  <data name="allDevices" xml:space="preserve">
+    <value>Alla enheter</value>
+  </data>
+  <data name="allUsers" xml:space="preserve">
+    <value>Alla användare</value>
+  </data>
+  <data name="attributes" xml:space="preserve">
+    <value>Användarinformation</value>
+  </data>
+  <data name="authorizingInProgress" xml:space="preserve">
+    <value>Pågående behörighetskontroll...</value>
+  </data>
+  <data name="buttonCancelDeleteDevice" xml:space="preserve">
+    <value>Avbryt</value>
+  </data>
+  <data name="buttonConfirmDeleteDevice" xml:space="preserve">
+    <value>Är du säker på att du vill radera enheten?</value>
+  </data>
+  <data name="buttonDeleteDevice" xml:space="preserve">
+    <value>Ta bort enhet</value>
+  </data>
+  <data name="buttonSeeFullUserInfo" xml:space="preserve">
+    <value>Se användarsida</value>
+  </data>
+  <data name="clearLabel" xml:space="preserve">
+    <value>Rensa</value>
+  </data>
+  <data name="deviceAliasLabel" xml:space="preserve">
+    <value>Alias</value>
+  </data>
+  <data name="deviceCreatedLabel" xml:space="preserve">
+    <value>Skapad</value>
+  </data>
+  <data name="deviceCurityIdLabel" xml:space="preserve">
+    <value>Curity ID</value>
+  </data>
+  <data name="deviceIdLabel" xml:space="preserve">
+    <value>Enhet ID</value>
+  </data>
+  <data name="deviceLastModifiedLabel" xml:space="preserve">
+    <value>Ändrad</value>
+  </data>
+  <data name="deviceOwnerLabel" xml:space="preserve">
+    <value>Ägare</value>
+  </data>
+  <data name="devices" xml:space="preserve">
+    <value>Enheter</value>
+  </data>
+  <data name="devicesTableTitle" xml:space="preserve">
+    <value>Alla enheter av användaren</value>
+  </data>
+  <data name="deviceTableDeviceType" xml:space="preserve">
+    <value>Typ av enhet</value>
+  </data>
+  <data name="email" xml:space="preserve">
+    <value>E-postadress</value>
+  </data>
+  <data name="familyName" xml:space="preserve">
+    <value>Efternamn</value>
+  </data>
+  <data name="givenName" xml:space="preserve">
+    <value>Förnamn</value>
+  </data>
+  <data name="greeting" xml:space="preserve">
+    <value>Hejsan</value>
+  </data>
+  <data name="headingUsers" xml:space="preserve">
+    <value>Användare</value>
+  </data>
+  <data name="labelSearchUsername" xml:space="preserve">
+    <value>Sök användarnamn</value>
+  </data>
+  <data name="labelSortBy" xml:space="preserve">
+    <value>Sortera efter</value>
+  </data>
+  <data name="langEnglish" xml:space="preserve">
+    <value>Engelska</value>
+  </data>
+  <data name="langSelect" xml:space="preserve">
+    <value>Välj språk</value>
+  </data>
+  <data name="langSelectCurrentLang" xml:space="preserve">
+    <value>Byt språk</value>
+  </data>
+  <data name="langSwedish" xml:space="preserve">
+    <value>Svenska</value>
+  </data>
+  <data name="login" xml:space="preserve">
+    <value>Logga in</value>
+  </data>
+  <data name="logout" xml:space="preserve">
+    <value>Logga ut</value>
+  </data>
+  <data name="mobile" xml:space="preserve">
+    <value>Telefonnummer</value>
+  </data>
+  <data name="myPage" xml:space="preserve">
+    <value>Min Sida</value>
+  </data>
+  <data name="myPageTitle" xml:space="preserve">
+    <value>Min sida</value>
+  </data>
+  <data name="nextTen" xml:space="preserve">
+    <value>Se nästa 10</value>
+  </data>
+  <data name="notAuthorized" xml:space="preserve">
+    <value>Du har inte behörighet att se detta innhåll.</value>
+  </data>
+  <data name="notFound" xml:space="preserve">
+    <value>Det finns inget på denna sidan</value>
+  </data>
+  <data name="nothingAtThisAdress" xml:space="preserve">
+    <value>Det finns inget på denna sidan.</value>
+  </data>
+  <data name="prevTen" xml:space="preserve">
+    <value>Se föregående 10</value>
+  </data>
+  <data name="profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="role" xml:space="preserve">
+    <value>Roll</value>
+  </data>
+  <data name="rowsPerPageString" xml:space="preserve">
+    <value>Rader per sida</value>
+  </data>
+  <data name="searchLabel" xml:space="preserve">
+    <value>Sök</value>
+  </data>
+  <data name="tableTitleMyDevices" xml:space="preserve">
+    <value>Mina enheter</value>
+  </data>
+  <data name="totalResults" xml:space="preserve">
+    <value>Totalt antal</value>
+  </data>
+  <data name="unauthorized" xml:space="preserve">
+    <value>Ej behörig</value>
+  </data>
+  <data name="userHasNoDevices" xml:space="preserve">
+    <value>Denna användare har inga registrerade enheter.</value>
+  </data>
+  <data name="userName" xml:space="preserve">
+    <value>Användarnamn</value>
+  </data>
+</root>

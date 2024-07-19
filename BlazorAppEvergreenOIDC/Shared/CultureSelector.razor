@@ -1,0 +1,43 @@
+﻿@using System.Globalization
+@using BlazorAppEvergreenOIDC.Pages
+
+@inject NavigationManager Navigation
+@inject IStringLocalizer<CultureExample> Loc
+
+<MudSelect Placeholder="@Loc["langSelect"]" @bind-Value="Culture" HelperText="@Loc["langSelectCurrentLang"]" CloseIcon="@Icons.Material.Filled.Flag">
+    <MudSelectItem Value="@(CultureInfo.GetCultureInfo("en-US"))">@Loc["langEnglish"]</MudSelectItem>
+    <MudSelectItem Value="@(CultureInfo.GetCultureInfo("sv-SE"))">@Loc["langSwedish"]</MudSelectItem>
+</MudSelect>
+
+@code
+{
+    private CultureInfo[] supportedCultures = new[]
+    {
+        new CultureInfo("en-US"),
+        new CultureInfo("sv-SE"),
+    };
+
+    protected override void OnInitialized()
+    {
+        Culture = CultureInfo.CurrentCulture;
+    }
+
+    private CultureInfo Culture
+    {
+        get => CultureInfo.CurrentCulture;
+        set
+        {
+            if (CultureInfo.CurrentCulture != value)
+            {
+                var uri = new Uri(Navigation.Uri)
+                    .GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+                var cultureEscaped = Uri.EscapeDataString(value.Name);
+                var uriEscaped = Uri.EscapeDataString(uri);
+
+                Navigation.NavigateTo(
+                    $"Culture/Set?culture={cultureEscaped}&redirectUri={uriEscaped}",
+                    forceLoad: true);
+            }
+        }
+    }
+}

@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h3>ClaimsVisualiser</h3>
+
+<h1>ClaimsPrincipal Data</h1>
+
+<MudButton Variant="Variant.Filled" @onclick="GetClaimsPrincipalData">Get ClaimsPrincipal Data</MudButton>
+
+<hr />
+<p>Username: @userName</p>
+<p>authMsg: @userName @authMessage</p>
+<hr />
+
+@if (claims.Count() > 0)
+{
+    <ul>
+        @foreach (var claim in claims)
+        {
+            <li>@claim.Type: @claim.Value</li>
+        }
+    </ul>
+}
+
+@code {
+    private string? authMessage;
+    private string? userName;
+    private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+    private async Task GetClaimsPrincipalData()
+    {
+        var authState = await AuthenticationStateProvider
+            .GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        {
+            authMessage = $"{user.Identity.Name} is authenticated.";
+            claims = user.Claims;
+            userName = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        }
+        else
+        {
+            authMessage = "The user is NOT authenticated.";
+        }
+    }
+}

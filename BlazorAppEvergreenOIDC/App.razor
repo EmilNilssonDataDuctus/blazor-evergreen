@@ -1,18 +1,31 @@
-﻿@inject TokenProvider TokenProvider
+﻿@using System.Globalization
+@using Pages
 
-<Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+@inject TokenProvider TokenProvider
+@inject IStringLocalizer<CultureExample> Loc
 
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <PageTitle>@Loc["unauthorized"]</PageTitle>
+                    @Loc["notAuthorized"]
+                </NotAuthorized>
+                <Authorizing>
+                    @Loc["authorizingInProgress"]
+                </Authorizing>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>@Loc["notFound"]</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">@Loc["nothingAtThisAdress"]</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
 @code {
     [Parameter]
     public InitialApplicationState? InitialState { get; set; }

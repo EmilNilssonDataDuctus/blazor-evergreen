@@ -1,0 +1,52 @@
+﻿@using BlazorAppEvergreenOIDC.Data
+
+@inject FileLogger fileLogger
+@inject ScimUserService ScimUsersService
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<CultureExample> Loc
+
+<MudTh>
+    @if (_confirmDelete)
+    {
+        <MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="@(() => CancelDelete())">@Loc["buttonCancelDeleteDevice"]</MudButton>
+        <MudDivider Class="my-3" />
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" @onclick="@(() => HandleDeleteDevice(@CurityId))">@Loc["buttonConfirmDeleteDevice"]</MudButton>
+    }
+    else
+    {
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" @onclick="@(() => TriggerConfirmButton())">@Loc["buttonDeleteDevice"]</MudButton>
+    }
+</MudTh>
+
+
+@code {
+    [Parameter]
+    public string CurityId { get; set; } = string.Empty;
+
+    private bool _confirmDelete;
+
+    private void TriggerConfirmButton()
+    {
+        _confirmDelete = true;
+    }
+
+    private void CancelDelete()
+    {
+        _confirmDelete = false;
+    }
+
+    private async Task HandleDeleteDevice(string deviceId)
+    {
+        try
+        {
+            await ScimUsersService.DeleteDeviceAsync(deviceId);
+            NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        }
+        catch (Exception e)
+        {
+            e.GetType();
+            fileLogger.SaveLogToFile(e.ToString());
+            throw e;
+        }
+    }
+}

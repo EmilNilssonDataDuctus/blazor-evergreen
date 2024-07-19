@@ -1,0 +1,33 @@
+﻿@using BlazorAppEvergreenOIDC.Models.ScimModels;
+@using System.Globalization
+
+@inject IStringLocalizer<CultureExample> Loc
+
+<MudPaper Width="100%" Class="mb-4 px-6">
+    <MudText Typo="Typo.h2">@Loc["attributes"]</MudText>
+    <MudList>
+        <div Class="user-info-list">
+            <MudListItem Class="user-info-label"><span>@Loc["role"]</span><br />@role</MudListItem>
+            <MudListItem Class="user-info-label"><span>@Loc["userName"]</span><br />@userName</MudListItem>
+            <MudListItem Class="user-info-label"><span>@Loc["givenName"]</span><br />@givenName</MudListItem>
+            <MudListItem Class="user-info-label"><span>@Loc["familyName"]</span><br />@familyName</MudListItem>
+            <MudListItem Class="user-info-label"><span>@Loc["email"]</span><br />@email</MudListItem>
+            <MudListItem Class="user-info-label"><span>@Loc["mobile"]</span><br />@mobile</MudListItem>
+        </div>
+    </MudList>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public string? role { get; set; }
+    [Parameter]
+    public string? userName { get; set; }
+    [Parameter]
+    public string? givenName { get; set; }
+    [Parameter]
+    public string? familyName { get; set; }
+    [Parameter]
+    public string? email { get; set; }
+    [Parameter]
+    public string? mobile { get; set; }
+}

@@ -1,0 +1,20 @@
+﻿@page "/all-users"
+
+@using System.Globalization
+@using Pages
+
+@inject IConfiguration Configuration;
+@inject IStringLocalizer<CultureExample> Loc
+
+@attribute [Authorize]
+
+<PageTitle>@Loc["allUsers"]</PageTitle>
+<AuthorizeView Roles="@Configuration["OpenIDConnect:AdminRoleValue"]">
+    <ChildContent>
+        <MudText Typo="Typo.h1">@Loc["allUsers"]</MudText>
+        <BlazorAppEvergreenOIDC.Pages.Controls.SCIMUsersTable />
+    </ChildContent>
+    <NotAuthorized>
+        @Loc["notAuthorized"]
+    </NotAuthorized>
+</AuthorizeView>

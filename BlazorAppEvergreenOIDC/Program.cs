@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
+using MudBlazor.Services;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,7 +16,11 @@ var Configuration = builder.Configuration;
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddMudServices();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<ScimUserService>();
+builder.Services.AddSingleton<FileLogger>();
 builder.Services.AddSingleton<TokenClient>();
 builder.Services.AddScoped<TokenProvider>();
 
@@ -74,6 +79,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 builder.Services.AddRazorPages();
 
+builder.Services.AddLocalization();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -88,6 +95,12 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+var supportedCultures = new[] { "en-US", "sv-SE" };
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture(supportedCultures[0])
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+app.UseRequestLocalization(localizationOptions);
 
 // https://stackoverflow.com/questions/53980129/oidc-login-fails-with-correlation-failed-cookie-not-found-while-cookie-is
 app.UseCookiePolicy(new CookiePolicyOptions

@@ -1,6 +1,13 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.Extensions.Options
+
+@inject IConfiguration Configuration;
 
 <PageTitle>BlazorAppEvergreenOIDC</PageTitle>
+
+<MudThemeProvider Theme="MyCustomTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
 <div class="page">
     <div class="sidebar">
@@ -8,17 +15,42 @@
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+        @if (Convert.ToBoolean(Configuration["OpenIDConnect:ShowTokenVisualiser"]))
+        {
+            <TokenVisualiser />
+        }
+        @if (Convert.ToBoolean(Configuration["OpenIDConnect:ShowClaimsVisualiser"]))
+        {
+            <ClaimsVisualiser />
+        }
+
         <article class="content px-4">
-            <div>
-                <TokenVisualiser />
-            </div>
-            <form method="GET" action="/protected">
-                <p><button type="submit">View Protected Data</button></p>
-            </form>
             @Body
         </article>
     </main>
 </div>
+
+@code {
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            Typography = new Typography()
+            {
+                H1 = new H1()
+                {
+                    FontFamily = new[] { "Roboto", "Helvetica", "Arial", "sans-serif" },
+                    FontSize = "3rem",
+                    FontWeight = 500,
+                    LineHeight = 1.6,
+                    LetterSpacing = ".0075em"
+                },
+                H2 = new H2()
+                {
+                    FontFamily = new[] { "Roboto", "Helvetica", "Arial", "sans-serif" },
+                    FontSize = "2rem",
+                    FontWeight = 500,
+                    LineHeight = 1.6,
+                    LetterSpacing = ".0075em"
+                }
+            }
+        };
+}

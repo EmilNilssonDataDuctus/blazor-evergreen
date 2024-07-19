@@ -1,0 +1,8 @@
+﻿.user-info-list {
+    display: inline-flex;
+    align-items: flex-start;
+}
+
+.user-info-list .user-info-label span {
+    font-weight: 900;
+}

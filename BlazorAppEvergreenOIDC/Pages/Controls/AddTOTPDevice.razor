@@ -1,0 +1,10 @@
+﻿@using System.Globalization
+@inject IStringLocalizer<CultureExample> Loc
+@inject IConfiguration Configuration;
+
+<MudButton Href="@Configuration["OpenIDConnect:TOTPAuthenticationContextClassReference"]"
+           Variant="Variant.Filled"
+           Color="Color.Primary"
+           Class="mt-8">
+    @Loc["addNewDeviceButtonText"]
+</MudButton>
